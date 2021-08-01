@@ -113,5 +113,10 @@ You must have the following packages installed on your sharkjack to continue:
 - python3-pip
 If you have not yet installed python, or other opkg packages on your sharkjack, refer to [this comment on the hak5 forum](https://forums.hak5.org/topic/50163-curl/?do=findComment&comment=324421) for ways to easily install packages
 
+Add the following to your `~/.bashrc` file:
+```
+eval "$(_SHARKPM_COMPLETE=bash_source sharkpm)"
+```
+
 
 ## <a id="development">Development</a>
