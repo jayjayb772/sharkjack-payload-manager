@@ -16,8 +16,9 @@ There are interactive elements to make it user friendly, while also providing cl
 
 ### pmset
 Usage: `pmset [options]`
+
 Description: Change the currently active payload on the sharkjack
-Options:
+
 - `-c string | --category=string` : Specify which category the payload is in
     - Optional
     - Default: ''
@@ -51,6 +52,7 @@ $~
 
 ### pmget
 Usage: `pmget`
+
 Description: Prints the currently active payload to the console
 
 ```bash
@@ -62,7 +64,9 @@ $~
 
 ### pmlist
 Usage: `pmlist [options]`
+
 Description: Lists payloads and categories in sharkjack file system
+
 - `-s | --show-payloads` : Show Payloads
     - Optional
     - Default: False
