@@ -13,7 +13,7 @@ setup(
     long_description = 'Easily switch payloads on a sharkjack with this cli tool',
     long_description_content_type = "text/markdown",
     url = '<github url where the tool code will remain>',
-    py_modules = ['payload_manager', 'app'],
+    py_modules = ['payloadmanager', 'app'],
     packages = find_packages(),
     install_requires = [requirements],
     python_requires='>=3.7',
@@ -23,8 +23,6 @@ setup(
     ],
     entry_points = '''
         [console_scripts]
-        pmlist=payload_manager:list
-        pmset=payload_manager:set
-        pmget=payload_manager:get
+        sharkpm=payloadmanager:cli
     '''
 )
