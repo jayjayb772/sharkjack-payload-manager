@@ -6,6 +6,9 @@ There are interactive elements to make it user friendly, while also providing cl
 
 ## Table of Contents
 - [Commands](#commands)
+    - [pmset](#pmset)
+    - [pmget](#pmget)
+    - [pmlist](#pmlist)
 - [Installation on Sharkjack](#install)
 - [Development](#development)
 
