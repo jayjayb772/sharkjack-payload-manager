@@ -3,6 +3,7 @@ This is a simple CLI tool created to easily switch sharkjack payloads from the c
 There are 3 main commands,`set`, `get`, and `list`.
 There are interactive elements to make it user friendly, while also providing cli arguments so you can swap payloads faster.
 
+Built with (Click)[https://click.palletsprojects.com/en/8.0.x/]
 
 ## Table of Contents
 - [Commands](#commands)
