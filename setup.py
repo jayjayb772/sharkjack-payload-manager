@@ -23,6 +23,6 @@ setup(
     ],
     entry_points = '''
         [console_scripts]
-        sharkpm=payloadmanager:cli
+        sharkpm=payloadmanager:sharkpm
     '''
 )

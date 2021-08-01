@@ -111,6 +111,7 @@ env.bak/
 venv.bak/
 extra/
 payload/
+root/
 
 # Spyder project settings
 .spyderproject
