@@ -14,27 +14,37 @@ def cli():
 # # # # # # # # #
 
 @click.command()
-@click.option('--showpayloads', default=False, help='If true (t, true, True), will list payload in categories', required=False)
-@click.option('--category', default='', help='Specify a category of payload to list', required=False)
-def list(showpayloads, category):
+@click.option('-c', '--category', default='', help='Specify a category of payload to list', required=False)
+@click.option('-s', '--show-payloads', default=False, help='If Present, Will list payloads', is_flag=True)
+def list(category, show_payloads):
     categories = getChildDirectories('extra')
     payloads = {}
-    if showpayloads == 'true' or showpayloads == 't' or showpayloads == True:
+
+    if show_payloads == True:
         click.echo(click.style('Showing Payloads', italic=True))
-        for cat in categories:
-            payloads[cat] = getChildDirectories('extra/' + cat)
+        payloads = getPayloadsForCategories(categories)
         printPayloads(payloads)
         return
 
     if category != '' and category in categories:
-        payloads[category] = getChildDirectories('extra/' + category)
+        payloads = getPayloadsForCategories([category])
         printPayloads(payloads)
         return
 
+    printCategories(categories)
+
+
+
+def getPayloadsForCategories(categories):
+    payloads = {}
+    for cat in categories:
+            payloads[cat] = getChildDirectories('extra/' + cat)
+    return payloads
+
+def printCategories(categories):
     click.echo(click.style('Categories:', bold=True))
     for cat in categories:
         click.echo(cat)
-
 
 def getChildDirectories(parent):
     return next(os.walk(parent))[1]
@@ -42,7 +52,7 @@ def getChildDirectories(parent):
 
 def printPayloads(payloads):
     for category in payloads:
-        click.echo(click.style(category, bold=True))
+        click.echo(click.style(f'{category} payloads', bold=True))
         for payload in payloads[category]:
             click.echo(payload)
         click.echo('')
@@ -54,7 +64,12 @@ def printPayloads(payloads):
 # # # # # # # # #
 @click.command()
 def get():
-    click.echo(getCurrentPayload())
+    full = getCurrentPayload().split(':')
+    category = full[0]
+    payload = full[1]
+    click.echo(f'Current payload category: {click.style(category, bold=True)}')
+    click.echo(f'Current payload: {click.style(payload, bold=True)}')
+
 
 def getCurrentPayload():
     currentPayloadFile = open('payload/currentpayload.txt', "r+")
@@ -62,28 +77,48 @@ def getCurrentPayload():
     currentPayloadFile.close()
     return currentPayload
 
-
-
 # # # # # # # # #
 #               #
 # COMMAND: SET  #
 #               #
 # # # # # # # # #
 @click.command()
-@click.option('--payload', default='', help='Name of the payload to switch to')
-@click.option('--category', default='', help='Category of the payload to switch to')
-@click.option('--whole', default='', help='Category and payload to switch to in \'category:payload\' Format')
-def set(payload, category, whole):
-    if whole == '' and (payload == '' or category == ''):
-        click.echo(click.style('Invalid parameters', bold=True))
-        click.echo('--payload and --category are required')
-        click.echo('or')
-        click.echo('--whole is required')
+@click.option('-c', '--category', default='', help='Specify the payload category', required=False)
+@click.option('-p', '--payload', default='', help='Specify the payload', required=False)
+def set(category, payload):
+    categoryOptions = getChildDirectories('extra')
+
+    if category == '' :
+        click.echo('No category provided')
+        category = click.prompt(
+            click.style(
+                'Please Select A Category: ',
+                bold=True
+                ),
+            default='',
+            type=click.Choice(categoryOptions),
+            show_default=True,
+            show_choices=True
+        )
+
+    if category not in categoryOptions:
+        click.echo('Invalid category')
         return
-    if whole != '':
-        wholeSplit = whole.split(':')
-        category = wholeSplit[0]
-        payload = wholeSplit[1]
+
+    payloadOptions = getPayloadsForCategories([category])
+
+    if payload == '' :
+        click.echo('No Payload Provided')
+        payload = click.prompt(
+            click.style(
+                'Please Select A Payload: ',
+                bold=True
+                ),
+            default='',
+            type=click.Choice(payloadOptions[category]),
+            show_default=True,
+            show_choices=True
+        )
 
     payloadDir = 'extra/' + category + '/' + payload
 
@@ -91,7 +126,7 @@ def set(payload, category, whole):
 
     deleteOldFiles()
     copyPayloadFilesToPayloadDir(payloadDir, payloadFiles)
-    setCurrentPayload(payload)
+    setCurrentPayload(category, payload)
     click.echo(click.style(payload + ' is now active', bold=True))
 
 
@@ -102,16 +137,14 @@ def deleteOldFiles():
     click.echo('Removing previous payload files')
     shutil.rmtree('payload')
 
-
 def copyPayloadFilesToPayloadDir(payloadDir, payloadFiles):
     click.echo('Moving the follwing files: ' + ', '.join(payloadFiles))
     shutil.copytree(payloadDir, 'payload')
 
-
-def setCurrentPayload(payload):
+def setCurrentPayload(category,payload):
     click.echo('Setting the current payload')
     currentPayloadFile = open('payload/currentpayload.txt', "a+")
-    currentPayloadFile.write(payload)
+    currentPayloadFile.write(f'{category}:{payload}')
     currentPayloadFile.close()
 
 

@@ -23,8 +23,8 @@ setup(
     ],
     entry_points = '''
         [console_scripts]
-        listpayloads=payload_manager:list
-        setpayload=payload_manager:set
-        getpayload=payload_manager:get
+        pmlist=payload_manager:list
+        pmset=payload_manager:set
+        pmget=payload_manager:get
     '''
 )
